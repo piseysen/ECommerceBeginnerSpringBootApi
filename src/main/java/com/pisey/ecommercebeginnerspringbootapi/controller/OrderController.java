@@ -4,9 +4,12 @@ package com.pisey.ecommercebeginnerspringbootapi.controller;
 import com.pisey.ecommercebeginnerspringbootapi.domain.Order;
 import com.pisey.ecommercebeginnerspringbootapi.domain.OrderProduct;
 import com.pisey.ecommercebeginnerspringbootapi.domain.OrderStatus;
+import com.pisey.ecommercebeginnerspringbootapi.domain.Product;
 import com.pisey.ecommercebeginnerspringbootapi.dto.OrderProductDto;
 import com.pisey.ecommercebeginnerspringbootapi.exception.ResourceNotFoundException;
 import com.pisey.ecommercebeginnerspringbootapi.payload.request.OrderFormRequest;
+import com.pisey.ecommercebeginnerspringbootapi.payload.response.DataResponse;
+import com.pisey.ecommercebeginnerspringbootapi.payload.response.MsgEntity;
 import com.pisey.ecommercebeginnerspringbootapi.service.OrderProductService;
 import com.pisey.ecommercebeginnerspringbootapi.service.OrderService;
 import com.pisey.ecommercebeginnerspringbootapi.service.ProductService;
@@ -50,7 +53,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Order> create(@RequestBody OrderFormRequest form) {
+    public ResponseEntity<DataResponse> create(@RequestBody OrderFormRequest form) {
         List<OrderProductDto> formDtos = form.getProductOrders();
         validateProductsExistence(formDtos);
         Order order = new Order();
@@ -76,7 +79,10 @@ public class OrderController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", uri);
 
-        return new ResponseEntity<>(order, headers, HttpStatus.CREATED);
+        MsgEntity msgEntity = new MsgEntity("01", "Success");
+        DataResponse dataResponse = new DataResponse(msgEntity, order);
+
+        return new ResponseEntity<>(dataResponse, headers, HttpStatus.CREATED);
     }
 
     private void validateProductsExistence(List<OrderProductDto> orderProducts) {
