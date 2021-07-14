@@ -1,9 +1,13 @@
 package com.pisey.ecommercebeginnerspringbootapi.payload.response;
 
 
-public class DataResponse extends BaseDataResponse<Object> {
+import lombok.Getter;
+import lombok.Setter;
 
-    public DataResponse(MsgEntity msgEntity, Object data) {
+@Getter
+@Setter
+public class DataResponse<T> extends BaseDataResponse<T> {
+    public DataResponse(MsgEntity msgEntity, T data) {
         super(msgEntity, data);
     }
 }

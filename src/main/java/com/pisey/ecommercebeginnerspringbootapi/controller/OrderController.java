@@ -4,19 +4,17 @@ package com.pisey.ecommercebeginnerspringbootapi.controller;
 import com.pisey.ecommercebeginnerspringbootapi.domain.Order;
 import com.pisey.ecommercebeginnerspringbootapi.domain.OrderProduct;
 import com.pisey.ecommercebeginnerspringbootapi.domain.OrderStatus;
-import com.pisey.ecommercebeginnerspringbootapi.domain.Product;
 import com.pisey.ecommercebeginnerspringbootapi.dto.OrderProductDto;
 import com.pisey.ecommercebeginnerspringbootapi.exception.ResourceNotFoundException;
 import com.pisey.ecommercebeginnerspringbootapi.payload.request.OrderFormRequest;
 import com.pisey.ecommercebeginnerspringbootapi.payload.response.DataResponse;
-import com.pisey.ecommercebeginnerspringbootapi.payload.response.MsgEntity;
+import com.pisey.ecommercebeginnerspringbootapi.payload.response.RespondMsgCode;
 import com.pisey.ecommercebeginnerspringbootapi.service.OrderProductService;
 import com.pisey.ecommercebeginnerspringbootapi.service.OrderService;
 import com.pisey.ecommercebeginnerspringbootapi.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -53,7 +51,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<DataResponse> create(@RequestBody OrderFormRequest form) {
+    public DataResponse<Order> create(@RequestBody OrderFormRequest form) {
         List<OrderProductDto> formDtos = form.getProductOrders();
         validateProductsExistence(formDtos);
         Order order = new Order();
@@ -63,8 +61,8 @@ public class OrderController {
         List<OrderProduct> orderProducts = new ArrayList<>();
         for (OrderProductDto dto : formDtos) {
             orderProducts.add(orderProductService.create(new OrderProduct(order, productService.getProduct(dto
-              .getProduct()
-              .getId()), dto.getQuantity())));
+                    .getProduct()
+                    .getId()), dto.getQuantity())));
         }
 
         order.setOrderProducts(orderProducts);
@@ -72,26 +70,23 @@ public class OrderController {
         this.orderService.update(order);
 
         String uri = ServletUriComponentsBuilder
-          .fromCurrentServletMapping()
-          .path("/orders/{id}")
-          .buildAndExpand(order.getId())
-          .toString();
+                .fromCurrentServletMapping()
+                .path("/orders/{id}")
+                .buildAndExpand(order.getId())
+                .toString();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", uri);
 
-        MsgEntity msgEntity = new MsgEntity("01", "Success");
-        DataResponse dataResponse = new DataResponse(msgEntity, order);
-
-        return new ResponseEntity<>(dataResponse, headers, HttpStatus.CREATED);
+        return new DataResponse<>(RespondMsgCode.responseSuccess(), order);
     }
 
     private void validateProductsExistence(List<OrderProductDto> orderProducts) {
         List<OrderProductDto> list = orderProducts
-          .stream()
-          .filter(op -> Objects.isNull(productService.getProduct(op
-            .getProduct()
-            .getId())))
-          .collect(Collectors.toList());
+                .stream()
+                .filter(op -> Objects.isNull(productService.getProduct(op
+                        .getProduct()
+                        .getId())))
+                .collect(Collectors.toList());
 
         if (!CollectionUtils.isEmpty(list)) {
             new ResourceNotFoundException("Product not found");

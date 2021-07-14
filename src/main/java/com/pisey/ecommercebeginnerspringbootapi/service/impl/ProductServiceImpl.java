@@ -8,6 +8,7 @@ import com.pisey.ecommercebeginnerspringbootapi.service.ProductService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 @Service
 @Transactional
 public class ProductServiceImpl implements ProductService {
@@ -34,4 +35,5 @@ public class ProductServiceImpl implements ProductService {
     public Product save(Product product) {
         return productRepository.save(product);
     }
+
 }
