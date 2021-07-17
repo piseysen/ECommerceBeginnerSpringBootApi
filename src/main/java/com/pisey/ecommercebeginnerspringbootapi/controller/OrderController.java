@@ -8,7 +8,7 @@ import com.pisey.ecommercebeginnerspringbootapi.dto.OrderProductDto;
 import com.pisey.ecommercebeginnerspringbootapi.exception.ResourceNotFoundException;
 import com.pisey.ecommercebeginnerspringbootapi.payload.request.OrderFormRequest;
 import com.pisey.ecommercebeginnerspringbootapi.payload.response.DataResponse;
-import com.pisey.ecommercebeginnerspringbootapi.payload.response.RespondMsgCode;
+import com.pisey.ecommercebeginnerspringbootapi.payload.response.RespondMessageCode;
 import com.pisey.ecommercebeginnerspringbootapi.service.OrderProductService;
 import com.pisey.ecommercebeginnerspringbootapi.service.OrderService;
 import com.pisey.ecommercebeginnerspringbootapi.service.ProductService;
@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@CrossOrigin(value = "*")
 @RestController
 @RequestMapping("/api/v1/orders")
 public class OrderController {
@@ -77,7 +78,7 @@ public class OrderController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", uri);
 
-        return new DataResponse<>(RespondMsgCode.responseSuccess(), order);
+        return new DataResponse<>(RespondMessageCode.responseSuccess(), order);
     }
 
     private void validateProductsExistence(List<OrderProductDto> orderProducts) {

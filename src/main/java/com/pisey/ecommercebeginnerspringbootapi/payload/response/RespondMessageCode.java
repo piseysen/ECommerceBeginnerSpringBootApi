@@ -1,6 +1,6 @@
 package com.pisey.ecommercebeginnerspringbootapi.payload.response;
 
-public class RespondMsgCode {
+public class RespondMessageCode {
     public static MsgEntity responseSuccess() {
         return new MsgEntity("01", "Successful");
     }
