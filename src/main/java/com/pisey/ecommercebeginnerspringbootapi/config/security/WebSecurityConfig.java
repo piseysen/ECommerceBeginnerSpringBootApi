@@ -74,25 +74,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
-    @Bean
-    public FilterRegistrationBean corsFilter1() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.setAllowedOrigins(Arrays.asList("http://localhost:4200","http://localhost:4201","http://localhost:4500","http://localhost:8890"));
-        config.addAllowedOrigin("*");
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("OPTIONS");
-        config.addAllowedMethod("GET");
-        config.addAllowedMethod("POST");
-        config.addAllowedMethod("PUT");
-        config.addAllowedMethod("DELETE");
-        Locale.setDefault(Locale.ENGLISH);
-        source.registerCorsConfiguration("/**", config);
-        FilterRegistrationBean<?> bean = new FilterRegistrationBean(new CorsFilter(source));
-        bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        return bean;
-    }
+//    @Bean
+//    public FilterRegistrationBean corsFilter1() {
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        CorsConfiguration config = new CorsConfiguration();
+//        config.setAllowCredentials(true);
+//        config.setAllowedOrigins(Arrays.asList("http://localhost:4200","http://localhost:4201","http://localhost:4500","http://localhost:8890"));
+//        config.addAllowedOrigin("*");
+//        config.addAllowedHeader("*");
+//        config.addAllowedMethod("OPTIONS");
+//        config.addAllowedMethod("GET");
+//        config.addAllowedMethod("POST");
+//        config.addAllowedMethod("PUT");
+//        config.addAllowedMethod("DELETE");
+//        Locale.setDefault(Locale.ENGLISH);
+//        source.registerCorsConfiguration("/**", config);
+//        FilterRegistrationBean<?> bean = new FilterRegistrationBean(new CorsFilter(source));
+//        bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+//        return bean;
+//    }
 
 
 }
