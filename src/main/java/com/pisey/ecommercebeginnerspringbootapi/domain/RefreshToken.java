@@ -1,9 +1,17 @@
 package com.pisey.ecommercebeginnerspringbootapi.domain;
 
+import lombok.*;
+
 import javax.persistence.*;
 import java.time.Instant;
 
-@Entity(name = "refreshtoken")
+@Data
+@Entity()
+@Table(name = "refreshtoken")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class RefreshToken {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -13,44 +21,24 @@ public class RefreshToken {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "token", nullable = false, unique = true)
     private String token;
 
-    @Column(nullable = false)
+    @OneToOne(optional = false, cascade = CascadeType.ALL)
+    @JoinColumn(name = "USER_DEVICE_ID", unique = true)
+    private UserDevice userDevice;
+
+    @Column(name = "REFRESH_COUNT")
+    private Long refreshCount;
+
+    @Column(name = "EXPIRY_DT", nullable = false)
     private Instant expiryDate;
 
-    public RefreshToken() {
+//    @Column(nullable = false)
+//    private Instant expiryDate;
+
+    public void incrementRefreshCount() {
+        refreshCount = refreshCount + 1;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public Instant getExpiryDate() {
-        return expiryDate;
-    }
-
-    public void setExpiryDate(Instant expiryDate) {
-        this.expiryDate = expiryDate;
-    }
 }

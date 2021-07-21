@@ -1,7 +1,19 @@
 package com.pisey.ecommercebeginnerspringbootapi.payload.request;
 
-import javax.validation.constraints.NotBlank;
+import com.pisey.ecommercebeginnerspringbootapi.dto.DeviceInfo;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class LoginRequest {
     @NotBlank
     private String username;
@@ -24,4 +36,8 @@ public class LoginRequest {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    @Valid
+    @NotNull(message = "Device info cannot be null")
+    private DeviceInfo deviceInfo;
 }

@@ -1,5 +1,8 @@
 package com.pisey.ecommercebeginnerspringbootapi.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -15,6 +18,8 @@ import java.util.Set;
                 @UniqueConstraint(columnNames = "email")
         }
 )
+@Getter
+@Setter
 public class User {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,10 +49,18 @@ public class User {
 
         }
 
-        public User(String username, String email, String password) {
+//        public User(String username, String email, String password) {
+//                this.username = username;
+//                this.email = email;
+//                this.password = password;
+//        }
+
+        public User( String username, String email, String password , Boolean active) {
                 this.username = username;
                 this.email = email;
                 this.password = password;
+                this.roles = roles;
+                this.active = active;
         }
 
         public Long getId() {
@@ -88,6 +101,25 @@ public class User {
 
         public void setRoles(Set<Role> roles) {
                 this.roles = roles;
+        }
+
+        public Boolean getActive() {
+                return active;
+        }
+
+        public void setActive(Boolean active) {
+                this.active = active;
+        }
+
+        @Column(nullable = false)
+        private Boolean active;
+
+        public void activate() {
+                this.active = true;
+        }
+
+        public void deactivate() {
+                this.active = false;
         }
 
 }
