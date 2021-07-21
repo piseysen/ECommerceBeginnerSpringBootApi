@@ -4,10 +4,12 @@ public class TokenRefreshResponse {
     private String accessToken;
     private String refreshToken;
     private String tokenType = "Bearer";
+    private Long expiryDuration;
 
-    public TokenRefreshResponse(String accessToken, String refreshToken) {
+    public TokenRefreshResponse(String accessToken, String refreshToken, Long expiryDuration) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
+        this.expiryDuration= expiryDuration;
     }
 
     public String getAccessToken() {
@@ -32,5 +34,13 @@ public class TokenRefreshResponse {
 
     public void setTokenType(String tokenType) {
         this.tokenType = tokenType;
+    }
+
+    public Long getExpiryDuration() {
+        return expiryDuration;
+    }
+
+    public void setExpiryDuration(Long expiryDuration) {
+        this.expiryDuration = expiryDuration;
     }
 }

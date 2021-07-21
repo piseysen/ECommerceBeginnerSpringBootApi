@@ -86,10 +86,10 @@ public class AuthController {
 //                .map(RefreshToken::getId)
 //                .ifPresent(refreshTokenService::deleteByUserId);
 
-       Optional<UserDevice> userDeviceOptional = userDeviceService.findByUserId(user.getId());
-       if(userDeviceOptional.isPresent()){
-           refreshTokenService.deleteByUserId(user.getId());
-       }
+        Optional<UserDevice> userDeviceOptional = userDeviceService.findByUserId(user.getId());
+        if (userDeviceOptional.isPresent()) {
+            refreshTokenService.deleteByUserId(user.getId());
+        }
 
         UserDevice userDevice = userDeviceService.createUserDevice(loginRequest.getDeviceInfo());
         RefreshToken refreshToken = refreshTokenService.createRefreshToken();
@@ -115,15 +115,29 @@ public class AuthController {
     public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest request) {
         String requestRefreshToken = request.getRefreshToken();
 
-        return refreshTokenService.findByToken(requestRefreshToken)
-                .map(refreshTokenService::verifyExpiration)
-                .map(RefreshToken::getUser)
-                .map(user -> {
-                    String token = jwtUtils.generateTokenFromUsername(user.getUsername());
-                    return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
+        Optional<String> token = Optional.of(refreshTokenService.findByToken(requestRefreshToken)
+                .map(refreshToken -> {
+                    refreshTokenService.verifyExpiration(refreshToken);
+                    userDeviceService.verifyRefreshAvailability(refreshToken);
+                    refreshTokenService.increaseCount(refreshToken);
+                    return refreshToken;
                 })
-                .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
-                        "Refresh token is not in database!"));
+                .map(RefreshToken::getUserDevice)
+                .map(UserDevice::getUser)
+                .map(u -> jwtUtils.generateTokenFromUsername(u.getUsername()))
+                .orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Missing refresh token in database.Please login again")));
+
+        return ResponseEntity.ok().body(new TokenRefreshResponse(token.get(), requestRefreshToken, jwtUtils.getExpiryDuration()));
+
+//        return refreshTokenService.findByToken(requestRefreshToken)
+//                .map(refreshTokenService::verifyExpiration)
+//                .map(RefreshToken::getUser)
+//                .map(user -> {
+//                    String token = jwtUtils.generateTokenFromUsername(user.getUsername());
+//                    return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
+//                })
+//                .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
+//                        "Refresh token is not in database!"));
     }
 
     @PostMapping("/signup")
@@ -192,7 +206,7 @@ public class AuthController {
 
         //refreshTokenService.deleteByUserId(logOutRequest.getUserId());
         Long userId = userDevice.getRefreshToken().getUser().getId();
-        if(userId > 0) {
+        if (userId > 0) {
             refreshTokenService.deleteByUserId(userId);
         }
 
